@@ -1,0 +1,18 @@
+{
+  "name": "lyra-bot",
+  "version": "1.0.0",
+  "description": "A powerful Telegram chatbot powered by **Claude AI (Anthropic)** built with Node.js.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "dependencies": {
+    "@anthropic-ai/sdk": "^0.95.1",
+    "dotenv": "^17.4.2",
+    "node-telegram-bot-api": "^0.67.0"
+  }
+}
