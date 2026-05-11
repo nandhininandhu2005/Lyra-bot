@@ -7,17 +7,6 @@ const GEMINI_API_KEY = process.env.GEMINI_API_KEY;
 
 const bot = new TelegramBot(TELEGRAM_TOKEN, { polling: true });
 const genAI = new GoogleGenerativeAI(GEMINI_API_KEY);
-const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
-
-const SYSTEM_PROMPT = `You are Lyra, an advanced AI assistant integrated into a Telegram chatbot.
-Your goals:
-1. Provide accurate, clear, and helpful answers to any user query.
-2. When possible, include reliable links from official websites.
-3. Keep answers clean, structured, and easy to read.
-4. Use bullet points or sections when helpful.
-5. For coding questions: provide working, clean code with brief explanation.
-6. Always prioritize correctness over sounding confident.
-Tone: Friendly, professional, and helpful.`;
 
 // === MEMORY (per user) ===
 const userSessions = {};
@@ -61,8 +50,7 @@ bot.onText(/\/help/, (msg) => {
     `*Example Questions:*\n` +
     `• "Who is the CM of Tamil Nadu?"\n` +
     `• "Write hello world in Python"\n` +
-    `• "What is quantum computing?"\n` +
-    `• "Best free tools for UI design"`;
+    `• "What is quantum computing?"`;
 
   bot.sendMessage(chatId, helpText, { parse_mode: "Markdown" });
 });
@@ -96,7 +84,13 @@ bot.on("message", async (msg) => {
   }, 4000);
 
   try {
-    // Build conversation history
+    // Gemini model with system instruction (correct format)
+    const model = genAI.getGenerativeModel({
+      model: "gemini-1.5-flash",
+      systemInstruction: "You are Lyra, an advanced AI assistant in a Telegram chatbot. Provide accurate, clear, helpful answers. Include reliable links when possible. Use bullet points when helpful. For coding questions provide working code with brief explanation. Be friendly and professional.",
+    });
+
+    // Build history
     const history = userSessions[userId].map((m) => ({
       role: m.role === "assistant" ? "model" : "user",
       parts: [{ text: m.content }],
@@ -105,7 +99,6 @@ bot.on("message", async (msg) => {
     const chat = model.startChat({
       history: history,
       generationConfig: { maxOutputTokens: 1024 },
-      systemInstruction: SYSTEM_PROMPT,
     });
 
     const result = await chat.sendMessage(userMessage);
