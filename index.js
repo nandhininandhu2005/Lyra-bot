@@ -86,7 +86,7 @@ bot.on("message", async (msg) => {
   try {
     // Gemini model with system instruction (correct format)
     const model = genAI.getGenerativeModel({
-      model: "gemini-1.5-flash",
+      model: "gemini-2.0-flash",
       systemInstruction: "You are Lyra, an advanced AI assistant in a Telegram chatbot. Provide accurate, clear, helpful answers. Include reliable links when possible. Use bullet points when helpful. For coding questions provide working code with brief explanation. Be friendly and professional.",
     });
 
